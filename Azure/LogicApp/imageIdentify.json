@@ -1,0 +1,269 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Append_to_array_variable_4": {
+                "inputs": {
+                    "name": "Combinedimages",
+                    "value": "@string(variables('ImageContent'))"
+                },
+                "runAfter": {
+                    "For_each": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "AppendToArrayVariable"
+            },
+            "Append_to_array_variable_5": {
+                "inputs": {
+                    "name": "Combinedimages",
+                    "value": "@string(variables('ImageTags'))"
+                },
+                "runAfter": {
+                    "Append_to_array_variable_4": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "AppendToArrayVariable"
+            },
+            "For_each": {
+                "actions": {
+                    "Describe_Image_Content": {
+                        "inputs": {
+                            "body": "@base64ToBinary(items('For_each')?['body']?['$content'])",
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['cognitiveservicescomputervision']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/vision/v2.0/describeImageContent",
+                            "queries": {
+                                "maxCandidates": 1
+                            }
+                        },
+                        "runAfter": {},
+                        "type": "ApiConnection"
+                    },
+                    "For_each_3": {
+                        "actions": {
+                            "Append_to_array_variable": {
+                                "inputs": {
+                                    "name": "ImageContent",
+                                    "value": "@items('For_each_3')?['text']"
+                                },
+                                "runAfter": {},
+                                "type": "AppendToArrayVariable"
+                            }
+                        },
+                        "foreach": "@body('Describe_Image_Content')?['description']?['captions']",
+                        "runAfter": {
+                            "Describe_Image_Content": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "Foreach"
+                    },
+                    "For_each_4": {
+                        "actions": {
+                            "Append_to_array_variable_2": {
+                                "inputs": {
+                                    "name": "ImageTags",
+                                    "value": "@items('For_each_4')"
+                                },
+                                "runAfter": {},
+                                "type": "AppendToArrayVariable"
+                            }
+                        },
+                        "foreach": "@body('Describe_Image_Content')?['description']?['tags']",
+                        "runAfter": {
+                            "For_each_3": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "Foreach"
+                    }
+                },
+                "foreach": "@triggerBody()?['$multipart']",
+                "runAfter": {
+                    "Initialize_variable_4": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Initialize_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ImageContent",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Initialize_variable_2": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ImageTags",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_variable_4": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Combinedimages",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_variable_2": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Response": {
+                "inputs": {
+                    "body": "@variables('Combinedimages')",
+                    "statusCode": 200
+                },
+                "runAfter": {
+                    "Append_to_array_variable_5": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Response"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "request": {
+                "inputs": {
+                    "method": "POST",
+                    "schema": {
+                        "properties": {
+                            "body": {
+                                "properties": {
+                                    "$content": {
+                                        "type": "string"
+                                    },
+                                    "$content-type": {
+                                        "type": "string"
+                                    },
+                                    "$multipart": {
+                                        "items": {
+                                            "properties": {
+                                                "body": {
+                                                    "properties": {
+                                                        "$content": {
+                                                            "type": "string"
+                                                        },
+                                                        "$content-type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "headers": {
+                                                    "properties": {
+                                                        "Content-Disposition": {
+                                                            "type": "string"
+                                                        },
+                                                        "Content-Type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "required": [
+                                                "headers",
+                                                "body"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "headers": {
+                                "properties": {
+                                    "Accept": {
+                                        "type": "string"
+                                    },
+                                    "Accept-Encoding": {
+                                        "type": "string"
+                                    },
+                                    "Accept-Language": {
+                                        "type": "string"
+                                    },
+                                    "Connection": {
+                                        "type": "string"
+                                    },
+                                    "Content-Length": {
+                                        "type": "string"
+                                    },
+                                    "Content-Type": {
+                                        "type": "string"
+                                    },
+                                    "Host": {
+                                        "type": "string"
+                                    },
+                                    "Referer": {
+                                        "type": "string"
+                                    },
+                                    "TE": {
+                                        "type": "string"
+                                    },
+                                    "User-Agent": {
+                                        "type": "string"
+                                    },
+                                    "origin": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "cognitiveservicescomputervision": {
+                    "connectionId": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/resourceGroups/samples/providers/Microsoft.Web/connections/cognitiveservicescomputervision",
+                    "connectionName": "cognitiveservicescomputervision",
+                    "id": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/providers/Microsoft.Web/locations/ukwest/managedApis/cognitiveservicescomputervision"
+                }
+            }
+        }
+    }
+}

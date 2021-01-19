@@ -1,0 +1,51 @@
+            <h2>Add a message to the queue</h2><br/>
+            <form onsubmit="return sbaddsubmitForm()">
+                Message: <br />
+                <textarea id="form-sbaddmessage" rows="4" cols="20"></textarea><br />
+                <input type="submit" value="Submit" />
+            </form>
+        
+            <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/superagent/2.2.0/superagent.min.js"></script>
+            <script>
+                function sbaddsubmitForm() {
+                    superagent
+                        .post('https://prod-28.uksouth.logic.azure.com:443/workflows/06ffc05c75964d79bd8a5c7991ec1562/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=0TessRPraU9gTtmUpad9AVGiUyDnPKVEiVwlnSwSJ6k')                       
+                         .send({
+                            message: document.getElementById('form-sbaddmessage').value
+                        })
+                        .end(function(sbadderr, sbaddres){
+                            if (sbadderr || !sbaddres.ok) {
+                                alert('Whoops. Something went wrong.');
+                            } else {
+                                window.location.href = "samples.html#sbmessage";
+                            }
+                        });
+                    return false;
+                }
+            </script>
+            <br/>
+<h2>Remove a message from the queue</h2>
+                <form onsubmit="return sbgetsubmitForm()">
+                    Message: <br />
+                    <textarea id="form-sbgetmessage" rows="10" cols="80" readonly></textarea><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            
+                <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/superagent/2.2.0/superagent.min.js"></script>
+                <script>
+                    function sbgetsubmitForm() {
+                        superagent
+                            .post('https://prod-15.uksouth.logic.azure.com:443/workflows/5f290cd4e0f44e8aaa1c180601443c93/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nuO6RizEm9SFJEHNQ-DTIsgHBd9GALC7n3XN3_Jy94k')
+                            .send({
+                                message: document.getElementById('form-sbgetmessage').value
+                            })
+                            .end(function(sbgeterr, sbgetres){
+                                if (sbgeterr || !sbgetres.ok) {
+                                    document.getElementById("form-sbgetmessage").value = "There are no messages in the queue";
+                                } else {
+                                    document.getElementById("form-sbgetmessage").value = sbgetres.body[0];
+                                }
+                            });
+                        return false;
+                    }
+                </script>

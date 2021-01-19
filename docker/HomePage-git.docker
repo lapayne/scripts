@@ -1,0 +1,12 @@
+USE centos
+MAINTAINER LAPITSolutions
+
+RUN yum -y install git
+RUN yum -y install httpd
+RUN rm -rf /var/www/html
+
+RUN git clone https://lapayne@dev.azure.com/lapayne/HomePage/_git/HomePage /var/www/html/
+
+ENTRYPOINT ["/usr/sbin/httpd"]
+CMD ["-D" "FOREGROUND"]
+EXPOSE 80

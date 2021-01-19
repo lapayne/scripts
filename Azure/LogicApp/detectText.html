@@ -1,0 +1,36 @@
+                <h2>OCR Analysis</h2><br/>
+                This uses Azure cognitive services to take a image and return a plain text version of it.<br/>
+                <form onsubmit="return submitocr()" enctype="multipart/form-data">
+                    <label for="OCR">Please choose a file:</label>
+                    <input type="file" id="OCR" name="OCR"><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            
+                <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/superagent/2.2.0/superagent.min.js"></script>
+                <script>
+                    function submitocr() {
+ var fileocr = document.getElementById('OCR').files;
+var formDataocr = new FormData();
+
+for (var keyocr in fileocr) {
+    // is the item a File?
+    if (fileocr.hasOwnProperty(keyocr) && fileocr[keyocr] instanceof File) {
+        formDataocr.append(keyocr, fileocr[keyocr]);
+    }
+}
+                           superagent.post('https://prod-07.ukwest.logic.azure.com:443/workflows/efd6216945c84015a1dc76f9bdc403c2/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=N3TA3Oanw2pJ87qMSsFXjuhb5Prddyflg6o6dZaK5dI')
+                            .send(formDataocr)
+                            .end(function(ocrerr, resocr){
+                                if (ocrerr || !resocr.ok) {
+                                    alert('Whoops. Something went wrong.');
+                                } else {
+                                        window.location = resocr.body[0];
+                                        //window.location= 'https:/lapitstore.blob.core.windows.net/vision/Guid.txt';
+                                        element.click();
+                                       
+                                }
+                            });
+                            
+                        return false;
+                    }
+                </script>

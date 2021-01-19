@@ -1,0 +1,123 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "For_each": {
+                "actions": {
+                    "Append_to_array_variable": {
+                        "inputs": {
+                            "name": "sbmessage",
+                            "value": "@base64ToString(items('For_each')?['ContentData'])"
+                        },
+                        "runAfter": {},
+                        "type": "AppendToArrayVariable"
+                    },
+                    "Complete_the_message_in_a_queue": {
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['servicebus']['connectionId']"
+                                }
+                            },
+                            "method": "delete",
+                            "path": "/@{encodeURIComponent(encodeURIComponent('messagesample'))}/messages/complete",
+                            "queries": {
+                                "lockToken": "@items('For_each')?['LockToken']",
+                                "queueType": "Main",
+                                "sessionId": ""
+                            }
+                        },
+                        "runAfter": {
+                            "Append_to_array_variable": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "ApiConnection"
+                    }
+                },
+                "foreach": "@body('Get_messages_from_a_queue_(peek-lock)')",
+                "runAfter": {
+                    "Get_messages_from_a_queue_(peek-lock)": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Get_messages_from_a_queue_(peek-lock)": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['servicebus']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/@{encodeURIComponent(encodeURIComponent('messagesample'))}/messages/batch/peek",
+                    "queries": {
+                        "maxMessageCount": 1,
+                        "queueType": "Main",
+                        "sessionId": ""
+                    }
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Initialize_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "sbmessage",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Response": {
+                "inputs": {
+                    "body": "@variables('sbmessage')",
+                    "statusCode": 200
+                },
+                "kind": "Http",
+                "runAfter": {
+                    "For_each": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Response"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {}
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "servicebus": {
+                    "connectionId": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/resourceGroups/samples/providers/Microsoft.Web/connections/servicebus",
+                    "connectionName": "servicebus",
+                    "id": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
+                }
+            }
+        }
+    }
+}

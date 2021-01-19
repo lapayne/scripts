@@ -1,0 +1,114 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Response": {
+                "inputs": {
+                    "statusCode": 200
+                },
+                "kind": "Http",
+                "runAfter": {
+                    "Send_message": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Response"
+            },
+            "Send_message": {
+                "inputs": {
+                    "body": {
+                        "ContentData": "@{base64(triggerBody()?['message'])}",
+                        "SessionId": "@{utcNow()}"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['servicebus']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/@{encodeURIComponent(encodeURIComponent('messagesample'))}/messages",
+                    "queries": {
+                        "systemProperties": "Run Details"
+                    }
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {
+                        "properties": {
+                            "body": {
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "headers": {
+                                "properties": {
+                                    "Accept": {
+                                        "type": "string"
+                                    },
+                                    "Accept-Encoding": {
+                                        "type": "string"
+                                    },
+                                    "Accept-Language": {
+                                        "type": "string"
+                                    },
+                                    "Connection": {
+                                        "type": "string"
+                                    },
+                                    "Content-Length": {
+                                        "type": "string"
+                                    },
+                                    "Content-Type": {
+                                        "type": "string"
+                                    },
+                                    "Host": {
+                                        "type": "string"
+                                    },
+                                    "Referer": {
+                                        "type": "string"
+                                    },
+                                    "User-Agent": {
+                                        "type": "string"
+                                    },
+                                    "origin": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "servicebus": {
+                    "connectionId": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/resourceGroups/samples/providers/Microsoft.Web/connections/servicebus",
+                    "connectionName": "servicebus",
+                    "id": "/subscriptions/3f6d29b1-08f7-4d8b-a298-8ea97dd77eda/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
+                }
+            }
+        }
+    }
+}
