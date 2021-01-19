@@ -1,0 +1,32 @@
+# Eg. User name="admin", Password="admin" for this code sample.
+$user = "snowsvc.web_hosting"
+$encryptedpass = "01000000d08c9ddf0115d1118c7a00c04fc297eb010000006d1dc5737490a94b9509af2a91ff4e6a0000000002000000000003660000c000000010000000748180aad0f940d63b022ca5f85a72980000000004800000a000000010000000f5fcfbdbb08abd357e6b734ed30fa1f320000000f66b03c533a97c0441ae7f83d1d6606cb10a645f612d8e0f60e10a9aad9836eb1400000073854e68acd8fb40426876a47baf3934321bd41c"
+
+# Build auth header
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $encryptedpass)))
+
+# Set proper headers
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add('Authorization',('Basic {0}' -f $base64AuthInfo))
+$headers.Add('Accept','application/json')
+$headers.Add('Content-Type','application/json')
+
+# Specify endpoint uri
+
+$SYS_ID = "aad82aeadbd70490d3a5d602ca961908"
+
+$uri = "https://url.service-now.com/api/now/table/incident/$SYS_ID"
+
+# Specify HTTP method
+
+$method = "put"
+
+# Specify request body
+
+$body = "{`"state`":`"6`",`"close_code`":`"Solved (Permanently)`",`"close_notes`":`"Testing McTesterson`",`"resolved_by`":`"userID"}"
+
+# Send HTTP request
+
+Invoke-RestMethod -Headers $headers -Method $method -Uri $uri -Body $body
+
+#Still not working

@@ -1,0 +1,31 @@
+#Look at the queue for all tickets logged by me
+
+# Eg. User name="admin", Password="admin" for this code sample.
+$user = "snowsvc.web_hosting"
+$encryptedpass = "01000000d08c9ddf0115d1118c7a00c04fc297eb010000006d1dc5737490a94b9509af2a91ff4e6a0000000002000000000003660000c000000010000000748180aad0f940d63b022ca5f85a72980000000004800000a000000010000000f5fcfbdbb08abd357e6b734ed30fa1f320000000f66b03c533a97c0441ae7f83d1d6606cb10a645f612d8e0f60e10a9aad9836eb1400000073854e68acd8fb40426876a47baf3934321bd41c"
+
+# Build auth header
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $encryptedpass)))
+
+# Set proper headers
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add('Authorization',('Basic {0}' -f $base64AuthInfo))
+$headers.Add('Accept','application/json')
+
+#If this matches X, do this.
+
+# Specify endpoint uri
+
+#Please not that you'll need to add %20 instead of a space in this line
+$uri = "https://siteURL.service-now.com/api/now/table/incident?sysparm_limit=100&assignment_group=11de0cdadb4f63008c78ce61399619ea&short_description=Ticket%202"
+
+# Specify HTTP method
+$method = "get"
+
+# Send HTTP request
+$json_string = Invoke-RestMethod -Headers $headers -Method $method -Uri $uri
+$count = $json_string.result.length
+
+$desc = $json_string.result.count
+
+$desc
