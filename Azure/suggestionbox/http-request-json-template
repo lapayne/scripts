@@ -1,0 +1,57 @@
+{
+    "properties": {
+        "body": {
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "team": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "headers": {
+            "properties": {
+                "Accept": {
+                    "type": "string"
+                },
+                "Accept-Encoding": {
+                    "type": "string"
+                },
+                "Accept-Language": {
+                    "type": "string"
+                },
+                "Cache-Control": {
+                    "type": "string"
+                },
+                "Connection": {
+                    "type": "string"
+                },
+                "Content-Length": {
+                    "type": "string"
+                },
+                "Content-Type": {
+                    "type": "string"
+                },
+                "Host": {
+                    "type": "string"
+                },
+                "Referer": {
+                    "type": "string"
+                },
+                "User-Agent": {
+                    "type": "string"
+                },
+                "dnt": {
+                    "type": "string"
+                },
+                "origin": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

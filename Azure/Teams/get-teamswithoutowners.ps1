@@ -19,9 +19,9 @@ foreach($team in $teams){
 		
 }
 
-$smtpServer = "webmail.emea.cshare.net"
-$smtpFrom = "M365Reports@computershare.com"
-$smtpTo = "lee.payne@computershare.co.uk"
+$smtpServer = "mail"
+$smtpFrom = "M365Reports"
+$smtpTo = "email"
 $messageSubject = "M365 Teams without owners"
 $message = New-Object System.Net.Mail.MailMessage $smtpfrom, $smtpto
 $message.Subject = $messageSubject

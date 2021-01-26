@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Suggestion Box</title>
+</head>
+<body style="background-color:#752864">
+<font color="white">
+    <h1>Suggestion Box</h1>
+    <form onsubmit="return submitForm()">
+       Team: <select id="form-team">
+            <option value="UNKNOWN">I Don't want to say (goes to all three TL's plus Dave H)</option>
+            <option value="DBA">DBA's (Goes to Nick W & Dave H)</option>
+            <option value="JADE">Jade (Goes to Lauren & Dave H)</option>
+            <option value="WEB">Web (Goes to Lee & Dave H)</option>
+          </select>
+		  <br />
+        Message: <br />
+        <textarea id="form-message" rows="10" cols="80"></textarea><br />
+        <input type="submit" value="Submit" />
+    </form>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/superagent/2.2.0/superagent.min.js"></script>
+    <script>
+        function submitForm() {
+            superagent
+                .post('https://prod-27.uksouth.logic.azure.com:443/workflows/4bc230e456d04ecebcd6e1ffa70575d0/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Gt9JY4LBOgVbKsNEY5HL5hxIvLusbgzhjQ-gtzWDvLw')
+                .send({ 
+                    team: document.getElementById('form-team').value,
+                    message: document.getElementById('form-message').value
+                })
+                .end(function(err, res){
+                    if (err || !res.ok) {
+                        alert('Whoops. Something went wrong.');
+                    } else {
+                        window.location.href = "success.html";
+                    }
+                });
+            return false;
+        }
+    </script>
+	</font>
+</body>
+</html>
+ 
