@@ -1,5 +1,5 @@
 ﻿import-module AzureAD
-$userName = "GL_SVC_M365_RO@global.cshare.net"
+$userName = "GL_SVC_M365_RO"
 $Password = "01000000d08c9ddf0115d1118c7a00c04fc297eb010000001b09b572fc33a04d81c89f458f3d99fe0000000002000000000003660000c00000001000000016169452cb69fcc5ef235f29c7afb8340000000004800000a000000010000000964286aa742df4a29a4a5f1212f917f620000000d4dd078e68a76a38cda61037ab178167062e20fc46ab1b6acde0743db7054d8114000000f7d542b2d06b7a680dca008f5cd5c00124d19023"
 $cred = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $userName, $(convertto-securestring $Password)
 
@@ -52,9 +52,9 @@ foreach($l in $licences){
 	}
 
 }
-$smtpServer = "webmail.emea.cshare.net"
-$smtpFrom = "M365Reports@computershare.com"
-$smtpTo = "lee.payne@computershare.co.uk"
+$smtpServer = "email"
+$smtpFrom = "M365Reports"
+$smtpTo = "lee.payne@email.com"
 $messageSubject = "M365 high licence usage"
 $message = New-Object System.Net.Mail.MailMessage $smtpfrom, $smtpto
 $message.Subject = $messageSubject
