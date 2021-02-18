@@ -6,7 +6,7 @@ $cred = New-Object -TypeName System.Management.Automation.PSCredential -argument
 Connect-AzureAD -credential $cred
 $highusage = @()
 
-$licences = Get-AzureADSubscribedSku | Select -Property Sku*,ConsumedUnits -ExpandProperty PrepaidUnits
+$licences = Get-AzureADSubscribedSku | Select-object -Property Sku*,ConsumedUnits -ExpandProperty PrepaidUnits
 
 foreach($l in $licences){
 	$percent =  [math]::Round($l.consumedunits/$l.enabled*100,2)
