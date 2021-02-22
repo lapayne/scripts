@@ -1,0 +1,11 @@
+FROM centos:latest
+
+MAINTAINER LAPITSolutions
+
+RUN yum -y install httpd
+RUN rm -rf /var/www/html
+COPY data/ /var/www/html
+ENTRYPOINT ["/usr/sbin/httpd"]
+CMD ["-D", "FOREGROUND"]
+
+EXPOSE 80
