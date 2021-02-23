@@ -1,11 +1,8 @@
-FROM centos:latest
+FROM alpine
 
 MAINTAINER LAPITSolutions
 
-RUN yum -y install httpd
-RUN rm -rf /var/www/html
+RUN apk add lighttpd
+RUN rm -rf /var/www/localhost/htdocs
 COPY data/ /var/www/html
-ENTRYPOINT ["/usr/sbin/httpd"]
-CMD ["-D", "FOREGROUND"]
-
-EXPOSE 80
+CMD ["lighttpd","-D","-f","/etc/lighttpd/lighttpd.conf"]
