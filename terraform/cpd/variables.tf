@@ -21,3 +21,9 @@ variable "azstorageaccountname" {
     type    = string
     default = "cpdstorageaccount"
 }
+
+variable "azapimgmtname" {
+    description = "The name of your API Management account"
+    type    = string
+    default = "CPDAPIMgmt"
+}

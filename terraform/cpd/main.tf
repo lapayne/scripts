@@ -240,7 +240,7 @@ resource "azurerm_cdn_profile" "cpdcdn" {
 resource "azurerm_cdn_endpoint" "cpdcdn" {
   name                = "cpdcdn"
   profile_name        = "cpdcdn"
-  location            = var.azregion
+  location            = "global"
   resource_group_name = var.azrg
 
      content_types_to_compress     = [
@@ -342,4 +342,39 @@ resource "azurerm_cdn_endpoint" "cpdcdn" {
 
       timeouts {}
 
+}
+
+#set up the API Management Gateway
+resource "azurerm_api_management" "CPDAPIMgmt" {
+  name                = var.azapimgmtname
+  location            = var.azregion
+  resource_group_name = var.azrg
+  publisher_name      = "LAP IT Solutions"
+  publisher_email     = "admin@lap-it.com"
+
+  sku_name = "Consumption_0"
+
+  policy {
+    xml_content = <<XML
+    <policies>
+      <inbound />
+      <backend>
+        <forward-request />
+      </backend>
+      <outbound />
+      <on-error />
+    </policies>
+XML
+
+  }
+}
+
+resource "azurerm_api_management_api" "addCPDRcord" {
+  name                = "addCPDRcord"
+  resource_group_name =var.azrg
+  api_management_name = var.azapimgmtname
+  revision            = "1"
+  display_name        = "addCPDRcord"
+  path                = "addCPDRcord"
+  protocols           = ["https"]
 }

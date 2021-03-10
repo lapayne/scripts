@@ -1,0 +1,6 @@
+FROM node:14
+WORKDIR /usr/src/app
+COPY cpd/package*.json ./
+COPY cpd/* ./
+CMD [ "node", "app.js" ]
+RUN npm install
